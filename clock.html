@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        canvas {
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="analogClock" width="200" height="200"></canvas>
+
+    <script>
+        function drawClock() {
+            var canvas = document.getElementById("analogClock");
+            var context = canvas.getContext("2d");
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+            var radius = canvas.width / 2 - 10;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw clock circle
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            context.strokeStyle = "#333";
+            context.lineWidth = 2;
+            context.stroke();
+
+            // Get current time
+            var now = new Date();
+            var hours = now.getHours() % 12;
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            // Draw hour hand
+            drawHand(centerX, centerY, hours * 30 + (minutes / 60) * 30, radius * 0.5, 6, context);
+
+            // Draw minute hand
+            drawHand(centerX, centerY, minutes * 6 + (seconds / 60) * 6, radius * 0.8, 4, context);
+
+            // Draw second hand
+            drawHand(centerX, centerY, seconds * 6, radius * 0.9, 2, context);
+
+            // Draw clock center
+            context.beginPath();
+            context.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+            context.fillStyle = "#333";
+            context.fill();
+        }
+
+        function drawHand(centerX, centerY, angle, length, width, context) {
+            var x = centerX + length * Math.cos((angle - 90) * Math.PI / 180);
+            var y = centerY + length * Math.sin((angle - 90) * Math.PI / 180);
+
+            context.beginPath();
+            context.moveTo(centerX, centerY);
+            context.lineTo(x, y);
+            context.strokeStyle = "#333";
+            context.lineWidth = width;
+            context.lineCap = "round";
+            context.stroke();
+        }
+
+        function updateClock() {
+            drawClock();
+            setTimeout(updateClock, 1000);
+        }
+
+        // Initial call to start the clock
+        updateClock();
+    </script>
+</body>
+</html>
